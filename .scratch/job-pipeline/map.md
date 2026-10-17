@@ -23,7 +23,7 @@ A locked, build-ready spec for a personal job-posting pipeline: scrape ~46 compa
 
 ## Decisions so far
 
-(none yet — tickets below are all open)
+- [Workday endpoint research](.scratch/job-pipeline/issues/04-workday-endpoint-research.md): Workday's CxS job-search API (`POST /wday/cxs/<tenant>/<site>/jobs`, detail via `GET .../job/<slug>`) is open and unauthenticated (no cookies/CSRF needed), confirmed live against Hitachi and KBR; tenant = subdomain before `.wdN.myworkdayjobs.com`, site = URL path segment after the locale, both read straight off a company's public careers URL.
 
 ## Not yet specified
 
