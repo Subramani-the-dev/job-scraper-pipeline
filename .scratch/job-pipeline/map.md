@@ -25,11 +25,11 @@ A locked, build-ready spec for a personal job-posting pipeline: scrape ~46 compa
 
 - [Workday endpoint research](.scratch/job-pipeline/issues/04-workday-endpoint-research.md): Workday's CxS job-search API (`POST /wday/cxs/<tenant>/<site>/jobs`, detail via `GET .../job/<slug>`) is open and unauthenticated (no cookies/CSRF needed), confirmed live against Hitachi and KBR; tenant = subdomain before `.wdN.myworkdayjobs.com`, site = URL path segment after the locale, both read straight off a company's public careers URL.
 - [Greenhouse/Lever/Ashby API research](.scratch/job-pipeline/issues/05-greenhouse-lever-ashby-api-research.md): all three are public, unauthenticated, unpaginated-per-company JSON APIs (`boards-api.greenhouse.io/v1/boards/{token}/jobs`, `api.lever.co/v0/postings/{site}?mode=json`, `api.ashbyhq.com/posting-api/job-board/{name}`) with no documented rate limits — confirmed against each platform's docs and a live board.
+- [Company registry](issues/01-company-registry.md): 50 companies (1 duplicate) across 4 categories the user supplied; no ATS confirmed yet — see tickets 11-14.
 
 ## Not yet specified
 
-- Once the company registry (see the registry ticket) is confirmed, create one research ticket per company (or per obvious-ATS batch) to pin its exact tenant/board-token/career-page URL.
-- Which companies land on the Playwright/custom-site path (Thoughtworks, EPAM, Globant, Nagarro, TCS, Infosys, Wipro, and similar) can't be ticketed precisely until the registry and the per-company ATS research above both exist.
+- Which companies actually land on the Playwright/custom-site path vs. an existing adapter can't be answered precisely until tickets 11-14 report back.
 - Exact GitHub Actions secrets list and Vercel env var list — sharpens once the Neon-provisioning task and the Telegram-bot task both report back their values.
 
 ## Out of scope
