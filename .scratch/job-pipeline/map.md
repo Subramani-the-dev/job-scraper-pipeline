@@ -24,6 +24,7 @@ A locked, build-ready spec for a personal job-posting pipeline: scrape ~46 compa
 ## Decisions so far
 
 - [Workday endpoint research](.scratch/job-pipeline/issues/04-workday-endpoint-research.md): Workday's CxS job-search API (`POST /wday/cxs/<tenant>/<site>/jobs`, detail via `GET .../job/<slug>`) is open and unauthenticated (no cookies/CSRF needed), confirmed live against Hitachi and KBR; tenant = subdomain before `.wdN.myworkdayjobs.com`, site = URL path segment after the locale, both read straight off a company's public careers URL.
+- [Greenhouse/Lever/Ashby API research](.scratch/job-pipeline/issues/05-greenhouse-lever-ashby-api-research.md): all three are public, unauthenticated, unpaginated-per-company JSON APIs (`boards-api.greenhouse.io/v1/boards/{token}/jobs`, `api.lever.co/v0/postings/{site}?mode=json`, `api.ashbyhq.com/posting-api/job-board/{name}`) with no documented rate limits — confirmed against each platform's docs and a live board.
 
 ## Not yet specified
 
