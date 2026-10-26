@@ -84,8 +84,8 @@ Registry names come from the resolution of #2 (branch `research/workday-endpoint
 
 | Source | Host | Result | Under the settled rules |
 |---|---|---|---|
-| Tavant | `public.zwayam.com`, `careers.tavant.com` | Timeout / HTTP2 stream error on `/robots.txt` (#19 recorded 404 and `Allow: /`, so this is probably Akamai reacting to our UA) | timeout = `failed: network`; retest with a normal gap before deciding |
-| Coforge | `careers.coforge.com` | Timeout / HTTP2 stream error | same |
+| Tavant | `public.zwayam.com`, `careers.tavant.com` | Timeout / HTTP2 stream error on `/robots.txt`. Retest below. #19 recorded 404 and `Allow: /` (best evidence so far). | `failed: network`; recheck from the Actions runner |
+| Coforge | `careers.coforge.com`, `bpscareers.coforge.com` | Timeout / HTTP2 stream error. Retest below. No earlier evidence. | `failed: network`; recheck from the Actions runner |
 | McKinsey Digital | `gateway.mckinsey.com` | 403 Cloudflare challenge page | 4xx = allowed, but the 403 is a bot challenge, not a real "no robots.txt"; confirm in the first dry-run |
 | Hashedin | `www.hashedin.com` | 403 | 4xx = allowed |
 | Infosys | `career.infosys.com` | 403 | 4xx = allowed; Source needs Playwright anyway |
@@ -99,3 +99,14 @@ Accenture (`/api/accenture/elastic/findjobs`), Thoughtworks (`/rest/careers/jobs
 ### Still not checked
 
 Persistent Systems (backend unknown), Kanini (no ATS found), Sonata, Facilio (no route), NTT Data main site (Phenom, fragmented), Hexaware and Zensar (Oracle HCM, done above), Hitachi/KBR (not in the registry; only #5 test tenants).
+
+### Retest of Tavant/Zwayam and Coforge (2026-10-26)
+
+Four hosts (`public.zwayam.com`, `careers.tavant.com`, `careers.coforge.com`, `bpscareers.coforge.com`), `GET /robots.txt`, 5s apart:
+- UA `job-pipeline-bot/1.0`: HTTP/1.1 timed out at 40s; HTTP/2 got `INTERNAL_ERROR` (stream not closed cleanly). Same on all four.
+- curl's default UA: same HTTP/2 stream error on Zwayam, Tavant and Coforge. So our UA is not the cause.
+- TCP and TLS to `careers.tavant.com` connect in under 30 ms: the host is reachable and drops the request after the handshake.
+- Likeliest cause: a rate limit or IP block on the checking machine (#19 reached Tavant and Zwayam with plain `curl` earlier). Not confirmed.
+- No attempt was made to get around it (no browser UA, no proxy).
+
+Verdict: unresolved. Both Sources stay `failed: network` under #22. The first `--source` dry-run from the GitHub Actions runner shows whether robots.txt answers from that IP.
