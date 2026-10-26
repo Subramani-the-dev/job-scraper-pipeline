@@ -8,7 +8,7 @@ Verdicts below come from a longest-match script run over the saved files, not by
 
 - 62 of 66 (host, path) pairs allowed. 4 disallowed, covering **3 Sources**: Freshworks, HCLTech, Standard Chartered.
 - All Workday and Oracle HCM routes are allowed. Several hosts disallow only the HTML UI (Citi `/2/`, Verizon `/verizon-careers/`, all `/refreshFacet/`); `/wday/cxs/` is never disallowed.
-- Three things need a decision: RippleHire, Ashby and a SuccessFactors fallback. See "Open" below.
+- Two policy gaps (RippleHire login redirect, 4xx on robots.txt) were settled; see "Decisions".
 
 ## Disallowed routes (follow #22: compliant route or no Source)
 
@@ -20,11 +20,12 @@ Verdicts below come from a longest-match script run over the saved files, not by
 
 New vs #22: Freshworks and HCLTech were not known to be blocked. HCLTech's "unify" JSON route was recorded as working in #17.
 
-## Open (not decided here)
+## Decisions (settled after the check)
 
-1. **RippleHire** (Tredence, LTIMindtree, Mphasis): `/robots.txt` 302s to a SAML login (`/oauth2/authorization/<tenant>`, then `/auth/saml2/authenticate/...`, final 200 HTML). There is no robots.txt to match. `/ripplehire/careers` also 302s without a session. Policy #22 has no rule for "robots.txt redirects to login".
-2. **Ashby** `api.ashbyhq.com/robots.txt` returns **401** `Unauthorized`. The posting API itself works (`/posting-api/job-board/ashby` is 200). #22 defines 404, 5xx and timeout only. RFC 9309 treats other 4xx as "unavailable = allowed".
-3. **401/403/other 4xx on robots.txt** in general: same gap as above.
+1. **RippleHire** (Tredence, LTIMindtree, Mphasis): `/robots.txt` 302s to a SAML login (`/oauth2/authorization/<tenant>`, then `/auth/saml2/authenticate/...`, final 200 HTML), so there is no robots.txt to match. `/ripplehire/careers` also 302s without a session. **Decision: treat as unknown and hold these three Sources until the route is re-checked.** #22 has no rule for "robots.txt redirects to login"; this is that rule.
+2. **Ashby and other 4xx on robots.txt:** `api.ashbyhq.com/robots.txt` returns 401, while the posting API works (`/posting-api/job-board/ashby` is 200). **Decision: any 4xx on robots.txt other than 404 counts as allowed (RFC 9309 "unavailable"), and the runtime logs a warning.** #22 defined only 404 (allowed), 5xx and timeout (`failed: network`); this extends it.
+
+Neither rule is written into #22 yet.
 
 ## Results per host
 
@@ -55,7 +56,7 @@ All paths allowed unless noted. "no rules" = no matching Disallow.
 |---|---|---|---|
 | Greenhouse | boards-api.greenhouse.io | Disallow `/embed/` | allowed |
 | Lever | api.lever.co | Allow `/`, Crawl-delay 1 | allowed (honour the 1s delay; our global gap is 2-5s) |
-| Ashby | api.ashbyhq.com | 401 | see Open #2 |
+| Ashby | api.ashbyhq.com | 401 | allowed (4xx rule, see Decisions #2) |
 | PayPal (EIGHTFOLD) | paypal.eightfold.ai | `Disallow: /`, Allow `/api/pcsx`, `/careers` | allowed (`/api/pcsx` wins by length) |
 | Zoho (ZOHO_RECRUIT) | careers.zohocorp.com | `Disallow: /`, Allow `/jobs/*`, `/jobs` | allowed (RSS `/jobs/Careers/rss`) |
 | Rocketlane (KULA) | careers.kula.ai | Disallow `/api/`, `/*/portal` | allowed |
@@ -63,7 +64,7 @@ All paths allowed unless noted. "no rules" = no matching Disallow.
 | Bank of America (CUSTOM_JSON) | careers.bankofamerica.com | Allow `/` | allowed (`/services/jobssearchservlet`) |
 | Wipro, Birlasoft, Chargebee (SF classic) | careers.wipro.com, jobs.birlasoft.com, jobs.chargebee.com | Disallow `/services/` etc., identical file on all | allowed (`/search/`, `/job/...`, `/sitemap.xml`) |
 | Kissflow, Ramco (CUSTOM_HTML) | careers.kissflow.com, www.ramco.com | tracking-param and system-page rules only; Ramco Disallow `/search*` | allowed |
-| RippleHire x3 | *.ripplehire.com | login redirect | see Open #1 |
+| RippleHire x3 | *.ripplehire.com | login redirect | on hold (see Decisions #1) |
 
 ## Not covered
 
