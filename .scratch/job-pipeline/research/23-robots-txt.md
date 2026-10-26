@@ -69,3 +69,33 @@ All paths allowed unless noted. "no rules" = no matching Disallow.
 ## Not covered
 
 Hosts for Sources whose registry rows I could not enumerate from the tickets (Equal Experts, Sigmoid, Tiger Analytics, Persistent, Virtusa, PwC ACs, Presidio, Facilio, Tata Elxsi, Ideas2IT, TCS, Infosys, etc.) were not checked. Facilio and the Phenom/Ultipro hosts need the full registry list.
+
+## Addendum: registry hosts from #12-#15 and #19
+
+Registry names come from the resolution of #2 (branch `research/workday-endpoint`); hosts and routes from the findings of #12-#15 and #19. Same UA and matcher as above, fetched 2026-10-26.
+
+### Disallowed
+
+| Source | Route | Rule hit | Alternative |
+|---|---|---|---|
+| EPAM | `careers.epam.com/api/jobs/v2/search/careers-i18n` | `Disallow: /api/*` | None researched. Company row, no Source, unless a compliant HTML route is found. |
+
+### Inconclusive (robots.txt not readable with our UA)
+
+| Source | Host | Result | Under the settled rules |
+|---|---|---|---|
+| Tavant | `public.zwayam.com`, `careers.tavant.com` | Timeout / HTTP2 stream error on `/robots.txt` (#19 recorded 404 and `Allow: /`, so this is probably Akamai reacting to our UA) | timeout = `failed: network`; retest with a normal gap before deciding |
+| Coforge | `careers.coforge.com` | Timeout / HTTP2 stream error | same |
+| McKinsey Digital | `gateway.mckinsey.com` | 403 Cloudflare challenge page | 4xx = allowed, but the 403 is a bot challenge, not a real "no robots.txt"; confirm in the first dry-run |
+| Hashedin | `www.hashedin.com` | 403 | 4xx = allowed |
+| Infosys | `career.infosys.com` | 403 | 4xx = allowed; Source needs Playwright anyway |
+| TCS | `ibegin.tcsapps.com` | 302 to `/candidate/next` (no robots.txt file) | no robots.txt; Source needs Playwright anyway |
+| Tech Mahindra | `careers.techmahindra.com` | 404 | allowed |
+
+### Allowed
+
+Accenture (`/api/accenture/elastic/findjobs`), Thoughtworks (`/rest/careers/jobs`), Publicis Sapient (`/bin/ps-redesign/careersJobsearch`), Globant (`/api/sap/job-requisition-v1`), Presidio (Ultipro `Allow: */JobBoard/`), PwC ACs (Phenom, both hosts; only `*/apply`, `*/jobcart` etc. disallowed), Tiger Analytics (Workable and in-house host), Virtusa (`/careers/job-search/widgets`), Cognizant (`/global-en/jobs/xml/`), Deloitte USI, EY GDS, Capgemini, IBM Consulting, GlobalLogic, Grid Dynamics, Nagarro, Tata Elxsi, Ideas2IT.
+
+### Still not checked
+
+Persistent Systems (backend unknown), Kanini (no ATS found), Sonata, Facilio (no route), NTT Data main site (Phenom, fragmented), Hexaware and Zensar (Oracle HCM, done above), Hitachi/KBR (not in the registry; only #5 test tenants).
