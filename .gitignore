@@ -4,3 +4,7 @@ node_modules/
 dist/
 .next/
 *.log
+
+# Agent worktrees (Claude Code) and local scratch files
+.claude/worktrees/
+number_map.json
