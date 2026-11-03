@@ -11,6 +11,25 @@ export default defineConfig([
     rules: { '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }] },
   },
   {
+    // Mechanical house rules from ~/.claude/CLAUDE.md, enforced here instead of in review.
+    files: ['**/*.ts'],
+    rules: {
+      // No `as SomeType` to silence the compiler (`as const` stays allowed).
+      '@typescript-eslint/consistent-type-assertions': ['error', { assertionStyle: 'never' }],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: ':function[async=true] CallExpression[callee.property.name=/^(then|catch)$/]',
+          message: "Use await + try/catch inside async functions; don't mix in .then()/.catch().",
+        },
+        {
+          selector: "CatchClause:not(:has(CallExpression[callee.object.name='logger']))",
+          message: 'Log the error with logger.* before returning a failure or re-throwing.',
+        },
+      ],
+    },
+  },
+  {
     files: ['**/*.js'],
     languageOptions: {
       sourceType: 'commonjs',
