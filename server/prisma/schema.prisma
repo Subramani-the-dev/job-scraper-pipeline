@@ -7,3 +7,165 @@ datasource db {
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
+
+enum CompanyCategory {
+  PRODUCT_SAAS_HOMEGROWN
+  GLOBAL_PRODUCT_GCC
+  BANK_FINTECH_GCC
+  SERVICES_CONSULTING
+}
+
+enum SourceKind {
+  WORKDAY
+  GREENHOUSE
+  LEVER
+  ASHBY
+  ORACLE_HCM
+  SUCCESSFACTORS
+  RIPPLEHIRE
+  SMARTRECRUITERS
+  EIGHTFOLD
+  ZOHO_RECRUIT
+  KULA
+  CUSTOM_JSON
+  CUSTOM_HTML
+  CUSTOM_PLAYWRIGHT
+}
+
+enum RunStatus {
+  OK
+  PARTIAL
+  FAILED
+}
+
+enum TrackingStatus {
+  UNSET
+  SAVED
+  APPLIED
+  IGNORED
+}
+
+enum AlertPostingStatus {
+  PENDING
+  SENDING
+  SENT
+}
+
+enum AlertKind {
+  DIGEST
+  ANOMALY
+  FAILURE_STREAK
+}
+
+enum AlertLogStatus {
+  SENT
+  FAILED
+}
+
+model Company {
+  id         Int             @id @default(autoincrement())
+  name       String          @unique
+  category   CompanyCategory
+  careersUrl String?
+  sources    Source[]
+  postings   Posting[]
+}
+
+model Source {
+  id        Int        @id @default(autoincrement())
+  companyId Int
+  company   Company    @relation(fields: [companyId], references: [id])
+  kind      SourceKind
+  label     String
+  config    Json
+  enabled   Boolean    @default(true)
+  note      String?
+  runs      Run[]
+  postings  Posting[]
+  alertLogs AlertLog[]
+
+  @@unique([companyId, label])
+  @@index([companyId])
+}
+
+model Run {
+  id            Int        @id @default(autoincrement())
+  sourceId      Int
+  source        Source     @relation(fields: [sourceId], references: [id])
+  startedAt     DateTime   @default(now())
+  finishedAt    DateTime?
+  status        RunStatus
+  errorKind     String?
+  postingsCount Int        @default(0)
+  newCount      Int        @default(0)
+  warnings      Json       @default("[]")
+  alertLogs     AlertLog[]
+
+  @@index([sourceId, startedAt(sort: Desc)])
+}
+
+model Posting {
+  id                 Int            @id @default(autoincrement())
+  companyId          Int
+  company            Company        @relation(fields: [companyId], references: [id])
+  sourceId           Int
+  source             Source         @relation(fields: [sourceId], references: [id])
+  identityKey        String
+  externalId         String?
+  title              String
+  url                String
+  locationText       String
+  postedAt           DateTime?
+  descriptionHtml    String
+  descriptionText    String
+  experienceMinYears Int?
+  experienceMaxYears Int?
+  sourceMeta         Json?
+  firstSeenAt        DateTime       @default(now())
+  lastSeenAt         DateTime       @default(now())
+  closedAt           DateTime?
+  trackingStatus     TrackingStatus @default(UNSET)
+  trackingUpdatedAt  DateTime?
+  alertPosting       AlertPosting?
+
+  @@unique([companyId, identityKey])
+  @@index([closedAt, firstSeenAt(sort: Desc)])
+  @@index([trackingStatus])
+  @@index([sourceId])
+}
+
+model FilterConfig {
+  id                       Int      @id @default(autoincrement())
+  keywords                 String[]
+  cities                   String[]
+  minExperienceYears       Int?
+  includeUnknownExperience Boolean  @default(true)
+  createdAt                DateTime @default(now())
+
+  @@index([createdAt(sort: Desc)])
+}
+
+model AlertLog {
+  id                Int            @id @default(autoincrement())
+  kind              AlertKind
+  sourceId          Int
+  source            Source         @relation(fields: [sourceId], references: [id])
+  runId             Int
+  run               Run            @relation(fields: [runId], references: [id])
+  status            AlertLogStatus
+  telegramMessageId String?
+  postingCount      Int?
+  createdAt         DateTime       @default(now())
+  alertPostings     AlertPosting[]
+}
+
+model AlertPosting {
+  id         Int                @id @default(autoincrement())
+  postingId  Int                @unique
+  posting    Posting            @relation(fields: [postingId], references: [id])
+  alertLogId Int?
+  alertLog   AlertLog?          @relation(fields: [alertLogId], references: [id])
+  status     AlertPostingStatus @default(PENDING)
+  createdAt  DateTime           @default(now())
+  claimedAt  DateTime?
+}
