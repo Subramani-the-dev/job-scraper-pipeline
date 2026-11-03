@@ -1,21 +1,23 @@
-import Joi from 'joi';
+import { z } from 'zod';
 import { Env } from '../interfaces/env.interface';
+import { formatZodIssues } from '../utils/functions.utils';
 
-const envSchema = Joi.object<Env>({
-  NODE_ENV: Joi.string().valid('development', 'test', 'production').default('development'),
-  PORT: Joi.number().port().default(4000),
-  CORS_ORIGIN: Joi.string().default('http://localhost:3000'),
-  DATABASE_URL: Joi.string().required(),
-  DIRECT_URL: Joi.string().required(),
-  TELEGRAM_BOT_TOKEN: Joi.string().required(),
-  TELEGRAM_CHAT_ID: Joi.string().required(),
-}).unknown(true);
+const required = z.string().min(1);
+
+const envSchema: z.ZodType<Env> = z.object({
+  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+  PORT: z.coerce.number().int().min(1).max(65535).default(4000),
+  CORS_ORIGIN: required.default('http://localhost:3000'),
+  DATABASE_URL: required,
+  DIRECT_URL: required,
+  TELEGRAM_BOT_TOKEN: required,
+  TELEGRAM_CHAT_ID: required,
+});
 
 export const validateEnv = (source: Record<string, string | undefined>): Env => {
-  const { error, value } = envSchema.validate(source, { abortEarly: false });
-  if (error) {
-    const details = error.details.map((detail) => detail.message).join('; ');
-    throw new Error(`Invalid environment configuration: ${details}`);
+  const result = envSchema.safeParse(source);
+  if (!result.success) {
+    throw new Error(`Invalid environment configuration: ${formatZodIssues(result.error)}`);
   }
-  return value;
+  return result.data;
 };

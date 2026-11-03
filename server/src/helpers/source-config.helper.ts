@@ -1,35 +1,37 @@
 import { Prisma, SourceKind } from '@prisma/client';
-import Joi from 'joi';
+import { z } from 'zod';
+import { formatZodIssues } from '../utils/functions.utils';
 
-const str = Joi.string().required();
-const url = Joi.string().uri().required();
+const str = z.string().min(1);
+const url = z.url();
 
-const SCHEMAS: Record<SourceKind, Joi.ObjectSchema> = {
-  WORKDAY: Joi.object({ host: str, tenant: str, site: str }),
-  GREENHOUSE: Joi.object({ boardToken: str }),
-  LEVER: Joi.object({ company: str }),
-  ASHBY: Joi.object({ boardName: str }),
-  ORACLE_HCM: Joi.object({ host: str, siteNumber: str }),
-  SUCCESSFACTORS: Joi.object({ baseUrl: url, theme: Joi.string().valid('classic', 'unify').required() }),
-  RIPPLEHIRE: Joi.object({ careersUrl: url }),
-  SMARTRECRUITERS: Joi.object({ companyId: str }),
-  EIGHTFOLD: Joi.object({ host: str, domain: str }),
-  ZOHO_RECRUIT: Joi.object({ portalUrl: url }),
-  KULA: Joi.object({ host: str, company: str }),
-  CUSTOM_JSON: Joi.object({ url, parser: str }),
-  CUSTOM_HTML: Joi.object({ url, parser: str }),
-  CUSTOM_PLAYWRIGHT: Joi.object({ url, parser: str }),
+// strictObject: unknown keys are rejected, matching the previous Joi default.
+const SCHEMAS: Record<SourceKind, z.ZodType<Record<string, string>>> = {
+  WORKDAY: z.strictObject({ host: str, tenant: str, site: str }),
+  GREENHOUSE: z.strictObject({ boardToken: str }),
+  LEVER: z.strictObject({ company: str }),
+  ASHBY: z.strictObject({ boardName: str }),
+  ORACLE_HCM: z.strictObject({ host: str, siteNumber: str }),
+  SUCCESSFACTORS: z.strictObject({ baseUrl: url, theme: z.enum(['classic', 'unify']) }),
+  RIPPLEHIRE: z.strictObject({ careersUrl: url }),
+  SMARTRECRUITERS: z.strictObject({ companyId: str }),
+  EIGHTFOLD: z.strictObject({ host: str, domain: str }),
+  ZOHO_RECRUIT: z.strictObject({ portalUrl: url }),
+  KULA: z.strictObject({ host: str, company: str }),
+  CUSTOM_JSON: z.strictObject({ url, parser: str }),
+  CUSTOM_HTML: z.strictObject({ url, parser: str }),
+  CUSTOM_PLAYWRIGHT: z.strictObject({ url, parser: str }),
 };
 
 export const validateSourceConfig = (
   kind: SourceKind,
   config: Prisma.InputJsonObject,
 ): Prisma.InputJsonObject => {
-  const { error, value } = SCHEMAS[kind].validate(config, { abortEarly: false });
-  if (error) {
-    throw new Error(`Invalid ${kind} config: ${error.details.map((d) => d.message).join('; ')}`);
+  const result = SCHEMAS[kind].safeParse(config);
+  if (!result.success) {
+    throw new Error(`Invalid ${kind} config: ${formatZodIssues(result.error)}`);
   }
-  return value;
+  return result.data;
 };
 
 // URLs a Source's adapter will request; robots.txt is checked against each.
