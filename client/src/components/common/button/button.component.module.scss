@@ -1,0 +1,23 @@
+.button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--button-fg, #ffffff);
+  background: var(--button-bg, #171717);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .button {
+    color: var(--button-fg, #0a0a0a);
+    background: var(--button-bg, #ededed);
+  }
+}

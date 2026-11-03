@@ -1,10 +1,15 @@
 import { render, screen } from '@testing-library/react';
 import Home from '@/app/page';
-import { STRINGS } from '@/constants/strings.constant';
+
+// The screen reads cookies and the database (covered in dashboard-screen.test);
+// this smoke test only checks the page renders it.
+vi.mock('@/screens/dashboard/dashboard.screen', () => ({
+  default: (): React.JSX.Element => <h1>dashboard</h1>,
+}));
 
 describe('Home page', () => {
-  it('renders the app title without crashing', () => {
+  it('renders the dashboard screen without crashing', () => {
     render(<Home />);
-    expect(screen.getByRole('heading', { name: STRINGS.home.title })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'dashboard' })).toBeInTheDocument();
   });
 });
