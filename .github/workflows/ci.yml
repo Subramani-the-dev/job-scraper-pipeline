@@ -59,6 +59,7 @@ jobs:
       # postinstall runs `npm run prisma:generate` (copies ../server/prisma/schema.prisma).
       - run: npm ci
       - run: npm run lint
-      - run: npx tsc --noEmit
+      # next typegen writes the route types (LayoutProps, PageProps) tsc needs on a clean tree.
+      - run: npm run typecheck
       - run: npm test
       - run: npm run build
