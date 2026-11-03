@@ -4,4 +4,7 @@ module.exports = {
   testEnvironment: 'node',
   setupFiles: ['<rootDir>/jest.setup.js'],
   roots: ['<rootDir>/__tests__'],
+  // Suites share one real test database, so they must never run in parallel —
+  // set here (not as a CLI flag) so `npx jest` and `npm test` behave the same.
+  maxWorkers: 1,
 };
