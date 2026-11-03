@@ -12,6 +12,12 @@ describe('validateEnv', () => {
     expect(validateEnv(validEnv).DATABASE_URL).toBe(validEnv.DATABASE_URL);
   });
 
+  it('rejects empty required values', () => {
+    expect(() => validateEnv({ ...validEnv, DATABASE_URL: '', TELEGRAM_BOT_TOKEN: '' })).toThrow(
+      /DATABASE_URL.*TELEGRAM_BOT_TOKEN/,
+    );
+  });
+
   it('throws naming every missing key', () => {
     expect(() => validateEnv({})).toThrow(/DATABASE_URL.*TELEGRAM_CHAT_ID/);
   });
