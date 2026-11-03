@@ -11,6 +11,10 @@ describe('validateEnv', () => {
     expect(validateEnv(validEnv).DASHBOARD_PASSWORD).toBe('pw');
   });
 
+  it('rejects an empty dashboard password', () => {
+    expect(() => validateEnv({ ...validEnv, DASHBOARD_PASSWORD: '' })).toThrow(/DASHBOARD_PASSWORD/);
+  });
+
   it('throws naming every missing key', () => {
     expect(() => validateEnv({})).toThrow(/DATABASE_URL.*DASHBOARD_PASSWORD.*SESSION_SECRET/);
   });
