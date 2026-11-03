@@ -6,8 +6,10 @@
     "dev": "nodemon",
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/index.js",
-    "test": "jest",
-    "typecheck": "tsc --noEmit"
+    "test": "jest --runInBand",
+    "typecheck": "tsc --noEmit",
+    "registry:sync": "ts-node src/scripts/registry-sync.ts",
+    "db:migrate": "prisma migrate deploy"
   },
   "license": "ISC",
   "description": "",
