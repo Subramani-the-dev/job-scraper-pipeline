@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { resetDb } from '../support/db.support';
 import { syncRegistry } from '../../src/services/registry.service';
 import { RegistryEntry } from '../../src/interfaces/registry.interface';
 
@@ -16,10 +17,7 @@ const entry: RegistryEntry = {
   sources: [{ kind: 'GREENHOUSE', label: 'main', config: { boardToken: 'acme' } }],
 };
 
-beforeEach(async () => {
-  await prisma.source.deleteMany();
-  await prisma.company.deleteMany();
-});
+beforeEach(async () => resetDb(prisma));
 afterAll(async () => prisma.$disconnect());
 
 describe('syncRegistry', () => {

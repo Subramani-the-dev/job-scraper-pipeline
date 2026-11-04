@@ -1,14 +1,10 @@
 import { PrismaClient } from '@prisma/client';
+import { resetDb } from './support/db.support';
 import { appendFilterConfig, getActiveFilterConfig } from '../src/services/filter-config.service';
 
 const prisma = new PrismaClient();
 
-beforeEach(async () => {
-  await prisma.posting.deleteMany();
-  await prisma.source.deleteMany();
-  await prisma.company.deleteMany();
-  await prisma.filterConfig.deleteMany();
-});
+beforeEach(async () => resetDb(prisma));
 afterAll(async () => prisma.$disconnect());
 
 const seedSource = async (): Promise<{ companyId: number; sourceId: number }> => {

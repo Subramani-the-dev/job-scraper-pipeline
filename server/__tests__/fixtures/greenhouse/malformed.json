@@ -1,0 +1,39 @@
+{
+  "jobs": [
+    {
+      "id": 8742061002,
+      "absolute_url": "https://job-boards.greenhouse.io/sigmoid/jobs/8742061002",
+      "location": {
+        "name": "Atlanta , GA, USA"
+      },
+      "updated_at": "2026-08-24T06:21:15-04:00",
+      "first_published": "2026-08-24T06:21:15-04:00",
+      "content": "&lt;div&gt;\n&lt;h2&gt;Accounts Director - Sigmoid Analytics&lt;/h2&gt;\n&lt;p&gt;&lt;strong&gt;Location:&lt;/strong&gt; Atlanta - 30% travel&lt;/p&gt;\n&lt;p&gt;Sigmoid unlocks business value for Fortune 1000 companies through expert data engineering, data science, and AI consulting.&lt;/p&gt;"
+    },
+    {
+      "id": 8860231002,
+      "title": "Assistant Manager - Travel",
+      "absolute_url": "https://job-boards.greenhouse.io/sigmoid/jobs/8860231002",
+      "location": {
+        "name": "Bengaluru, Karnataka, India"
+      },
+      "updated_at": "2026-10-30T03:51:27-04:00",
+      "first_published": "2026-10-01T11:12:41-04:00",
+      "content": "&lt;div&gt;\n&lt;h2&gt;JD – Asst Manager Travel – Operations&lt;/h2&gt;\n&lt;h3&gt;Role Overview&lt;/h3&gt;\n&lt;p&gt;The Assistant Manager – Corporate Travel &amp;amp; Visa Operations will oversee end-to-end domestic and international travel management, complex visa compliance, vendor relationship management and emergency traveler support. This role requires a hands-on operations leader who can balance seamless travel execution with strict policy enforcement, cost optimization and vendor performance management.&lt;/p&gt;"
+    },
+    {
+      "id": 8202878002,
+      "title": "Associate Director - Account Management",
+      "absolute_url": "https://job-boards.greenhouse.io/sigmoid/jobs/8202878002",
+      "location": {
+        "name": "Bengaluru, Karnataka, India"
+      },
+      "updated_at": "2026-09-08T06:47:18-04:00",
+      "first_published": "2025-10-24T04:30:20-04:00",
+      "content": "&lt;h2&gt;&lt;strong&gt;About the company:&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Sigmoid enables business transformation using data and analytics, leveraging real-time insights to make accurate and fast business decisions, by building modern data architectures using cloud and open source. Some of the world’s largest data producers engage with Sigmoid to solve complex business problems. Sigmoid brings deep expertise in data engineering, predictive analytics, artificial intelligence, and DataOps. Sigmoid has been recognized as one of the fastest growing technology companies in North America, 2021, by Financial Times, Inc.&lt;/p&gt;"
+    }
+  ],
+  "meta": {
+    "total": 3
+  }
+}
