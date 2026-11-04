@@ -6,9 +6,11 @@ const str = z.string().min(1);
 const url = z.url();
 
 // strictObject: unknown keys are rejected, matching the previous Joi default.
+export const greenhouseConfigSchema = z.strictObject({ boardToken: str });
+
 const SCHEMAS: Record<SourceKind, z.ZodType<Record<string, string>>> = {
   WORKDAY: z.strictObject({ host: str, tenant: str, site: str }),
-  GREENHOUSE: z.strictObject({ boardToken: str }),
+  GREENHOUSE: greenhouseConfigSchema,
   LEVER: z.strictObject({ company: str }),
   ASHBY: z.strictObject({ boardName: str }),
   ORACLE_HCM: z.strictObject({ host: str, siteNumber: str }),
